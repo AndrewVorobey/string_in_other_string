@@ -14,14 +14,15 @@ public class AlgoWithString {
         int[] pfl = pfl(pattern);
         int k = 0;
         int i = 0;
+        int delta = 0;
         int currentNumber = 1;
         String text = new String();
         while(true) {
-            if(text.length() > i) {
-                while (pattern.charAt(k) != text.charAt(i) && k > 0) {
+            if(text.length() > i - delta) {
+                while (pattern.charAt(k) != text.charAt(i - delta) && k > 0) {
                     k = pfl[k - 1];
                 }
-                if (pattern.charAt(k) == text.charAt(i)) {
+                if (pattern.charAt(k) == text.charAt(i - delta)) {
                     k = k + 1;
                     if (k == pattern.length()) {
                         return i + 1 - k + 1;
@@ -32,6 +33,8 @@ public class AlgoWithString {
                 ++i;
             } else {
                 text += currentNumber++;
+                text = text.substring(i-delta);
+                delta = i;
             }
         }
     }

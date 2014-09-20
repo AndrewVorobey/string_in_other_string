@@ -1,7 +1,5 @@
 package Main;
 
-import java.util.Arrays;
-
 /**
  * Created by Андрей on 19.09.2014.
  */
@@ -11,48 +9,48 @@ public class AlgoWithString {
     }
 
     private static int adaptationKnuthMorrisPrattAlgorithm(String pattern) {
-        int[] pfl = pfl(pattern);
-        int k = 0;
-        int i = 0;
-        int delta = 0;
+        int[] AllowableShift = computeAllowableShift(pattern);
+        int currentPattertIndex = 0;
+        int absoluteIndex = 0;
+        int deletedSymbolsCount = 0;
         int currentNumber = 1;
         String text = new String();
         while(true) {
-            if(text.length() > i - delta) {
-                while (pattern.charAt(k) != text.charAt(i - delta) && k > 0) {
-                    k = pfl[k - 1];
+            if(text.length() > absoluteIndex - deletedSymbolsCount) {
+                while (pattern.charAt(currentPattertIndex) != text.charAt(absoluteIndex - deletedSymbolsCount) && currentPattertIndex > 0) {
+                    currentPattertIndex = AllowableShift[currentPattertIndex - 1];
                 }
-                if (pattern.charAt(k) == text.charAt(i - delta)) {
-                    k = k + 1;
-                    if (k == pattern.length()) {
-                        return i + 1 - k + 1;
+                if (pattern.charAt(currentPattertIndex) == text.charAt(absoluteIndex - deletedSymbolsCount)) {
+                    currentPattertIndex = currentPattertIndex + 1;
+                    if (currentPattertIndex == pattern.length()) {
+                        return absoluteIndex + 1 - currentPattertIndex + 1;
                     }
                 } else {
-                    k = 0;
+                    currentPattertIndex = 0;
                 }
-                ++i;
+                ++absoluteIndex;
             } else {
                 text += currentNumber++;
-                text = text.substring(i-delta);
-                delta = i;
+                text = text.substring(absoluteIndex-deletedSymbolsCount);
+                deletedSymbolsCount = absoluteIndex;
             }
         }
     }
 
-    private static int[] pfl(String text) {
-        int[] pfl = new int[text.length()];
-        pfl[0] = 0;
+    private static int[] computeAllowableShift(String text) {
+        int[] AllowableShift = new int[text.length()];
+        AllowableShift[0] = 0;
         for(int i = 1; i < text.length(); ++i) {
-            int k = pfl[i - 1];
+            int k = AllowableShift[i - 1];
             while(text.charAt(k) != text.charAt(i) && k > 0) {
-                k = pfl[k - 1];
+                k = AllowableShift[k - 1];
             }
             if(text.charAt(k) == text.charAt(i)) {
-                pfl[i] = k + 1;
+                AllowableShift[i] = k + 1;
             } else {
-                pfl[i] = 0;
+                AllowableShift[i] = 0;
             }
         }
-        return pfl;
+        return AllowableShift;
     }
 }
